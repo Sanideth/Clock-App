@@ -5,10 +5,24 @@ import BackgroundImageDay from "../images/bg-image-daytime.jpg";
 import { ReactComponent as IconRefresh } from "../images/icon-refresh.svg";
 import { ReactComponent as IconSun } from "../images/icon-sun.svg";
 import { ReactComponent as IconArrowDown } from "../images/icon-arrow-down.svg";
+import useAPI from "../components/useAPI";
 
 interface MoreProps {
   more: boolean;
 }
+
+interface IQuote {
+  author: string;
+  authorSlug: string;
+  content: string;
+  dateAdded: string;
+  dateModified: string;
+  length: number;
+  tags: string[];
+  _id: string;
+}
+
+const QUOTE_URL = "https://api.quotable.io/random";
 
 const HeroWrapper = styled.div<MoreProps>`
   height: ${(props) => (props.more ? "70vh" : "100vh")};
@@ -59,6 +73,7 @@ const QuoteButton = styled.button`
   background-color: transparent;
   border: 0;
   cursor: pointer;
+  margin-left: 1rem;
 `;
 
 const TimeWrapper = styled.div`
@@ -125,8 +140,9 @@ const CTAIconContainer = styled.div`
   margin-left: 1.3rem;
 `;
 
-const CTAIcon = styled(IconArrowDown)<MoreProps>`
-  transform: ${(props) => (props.more ? "rotate(180deg)" : "rotate(0deg)")};
+const CTAIcon = styled(IconArrowDown)`
+  transform: ${(props: MoreProps) =>
+    props.more ? "rotate(180deg)" : "rotate(0deg)"};
   transition: all 0.3s;
 `;
 
@@ -140,6 +156,16 @@ const Bottom = styled.div<MoreProps>`
 function App() {
   const [more, setMore] = React.useState<boolean>(false);
 
+  const [data, setData] = useAPI<IQuote>(QUOTE_URL, null);
+
+  const refetchQuote = async () => {
+    const res = await fetch(QUOTE_URL);
+    if (res.ok) {
+      const data: IQuote = await res.json();
+      setData(data);
+    }
+  };
+
   return (
     <>
       <HeroWrapper more={more}>
@@ -147,14 +173,12 @@ function App() {
           <HeroLeft>
             <QuoteWrapper>
               <div>
-                <p>
-                  “The science of operations, as derived from mathematics more
-                  especially, is a science of itself, and has its own abstract
-                  truth and value.”
-                </p>
-                <QuoteAuthor>Ada Lovelace</QuoteAuthor>
+                <p>{data ? data.content : "Loading Quote..."}</p>
+                <QuoteAuthor>
+                  {data ? data.author : "Loading Author..."}
+                </QuoteAuthor>
               </div>
-              <QuoteButton>
+              <QuoteButton onClick={refetchQuote}>
                 <IconRefresh />
               </QuoteButton>
             </QuoteWrapper>

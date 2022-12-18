@@ -22,7 +22,7 @@ import {
 
 const IP_URL = "https://geolocation-db.com/json/";
 const GEO_API_KEY = "B8dqMCbfdc8Pmg4CiC5BfG7oVaadN3su6oSp0erS";
-const GEO_LOCATION_URL = `https://api.ipbase.com/v2/info?apikey=${GEO_API_KEY}&ip=1.1.1.1`;
+const GEO_LOCATION_URL = `https://api.ipbase.com/v2/info?apikey=${GEO_API_KEY}`;
 const QUOTE_URL = "https://api.quotable.io/random";
 const TIME_URL = "http://worldtimeapi.org/api/";
 
